@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>ConnectUs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              nexus: {
+                900: 'rgb(var(--bg-900) / <alpha-value>)',
+                800: 'rgb(var(--bg-800) / <alpha-value>)',
+                700: 'rgb(var(--bg-700) / <alpha-value>)',
+                600: 'rgb(var(--bg-600) / <alpha-value>)',
+                accent: 'rgb(var(--accent) / <alpha-value>)',
+                green: '#23a559',
+                red: '#da373c'
+              },
+              gray: {
+                100: 'rgb(var(--text-100) / <alpha-value>)',
+                200: 'rgb(var(--text-200) / <alpha-value>)',
+                300: 'rgb(var(--text-300) / <alpha-value>)',
+                400: 'rgb(var(--text-400) / <alpha-value>)',
+                500: 'rgb(var(--text-500) / <alpha-value>)',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <!-- PeerJS CDN -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/",
+        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+        "dexie": "https://aistudiocdn.com/dexie@^4.2.1",
+        "peerjs": "https://aistudiocdn.com/peerjs@^1.5.5"
+      }
+    }
+    </script>
+    <style>
+      :root {
+        --sat: env(safe-area-inset-top);
+        --sab: env(safe-area-inset-bottom);
+        --sal: env(safe-area-inset-left);
+        --sar: env(safe-area-inset-right);
+      }
+
+      /* Dark Theme (Default) - Discord-like Dark */
+      [data-theme="dark"] {
+        --bg-900: 30 31 34;   /* #1e1f22 */
+        --bg-800: 43 45 49;   /* #2b2d31 */
+        --bg-700: 49 51 56;   /* #313338 */
+        --bg-600: 56 58 64;   /* #383a40 */
+        --accent: 88 101 242; /* #5865F2 */
+        
+        --text-100: 242 243 245; /* Almost White */
+        --text-200: 219 222 225;
+        --text-300: 181 186 193;
+        --text-400: 148 155 164;
+        --text-500: 128 132 142;
+      }
+
+      /* Light Theme - Discord-like Light */
+      [data-theme="light"] {
+        --bg-900: 255 255 255; /* #ffffff Main sidebar bg becomes white */
+        --bg-800: 242 243 245; /* #f2f3f5 Sidebar/List */
+        --bg-700: 255 255 255; /* #ffffff Chat bg */
+        --bg-600: 235 237 239; /* #ebedef Inputs/Hover */
+        --accent: 88 101 242;  /* #5865F2 */
+
+        --text-100: 6 6 7;     /* Almost Black */
+        --text-200: 49 51 56;
+        --text-300: 78 80 88;
+        --text-400: 92 94 102;
+        --text-500: 116 127 141;
+      }
+
+      /* Midnight Theme - Deep Blue */
+      [data-theme="midnight"] {
+        --bg-900: 10 15 25;    /* Very Dark Blue */
+        --bg-800: 15 23 42;    /* Slate 900 */
+        --bg-700: 23 37 84;    /* Blue 950ish */
+        --bg-600: 30 58 138;   /* Blue 900 */
+        --accent: 56 189 248;  /* Sky Blue */
+
+        --text-100: 240 249 255;
+        --text-200: 224 242 254;
+        --text-300: 186 230 253;
+        --text-400: 125 211 252;
+        --text-500: 56 189 248;
+      }
+
+      /* Forest Theme - Deep Green */
+      [data-theme="forest"] {
+        --bg-900: 20 25 20;    
+        --bg-800: 26 35 26;    
+        --bg-700: 32 45 32;   
+        --bg-600: 40 55 40;   
+        --accent: 34 197 94;  /* Green 500 */
+
+        --text-100: 240 253 244;
+        --text-200: 220 252 231;
+        --text-300: 187 247 208;
+        --text-400: 134 239 172;
+        --text-500: 74 222 128;
+      }
+
+      /* Sunset Theme - Warm Purple/Orange */
+      [data-theme="sunset"] {
+        --bg-900: 42 27 46;    
+        --bg-800: 56 36 61;    
+        --bg-700: 74 48 82;   
+        --bg-600: 92 60 102;   
+        --accent: 249 115 22;  /* Orange 500 */
+
+        --text-100: 255 247 237;
+        --text-200: 254 215 170;
+        --text-300: 253 186 116;
+        --text-400: 251 146 60;
+        --text-500: 249 115 22;
+      }
+
+      /* Ocean Theme - Deep Teal */
+      [data-theme="ocean"] {
+        --bg-900: 22 42 43;    
+        --bg-800: 28 54 56;    
+        --bg-700: 36 70 71;   
+        --bg-600: 44 86 87;   
+        --accent: 6 182 212;  /* Cyan 500 */
+
+        --text-100: 236 254 255;
+        --text-200: 207 250 254;
+        --text-300: 165 243 252;
+        --text-400: 103 232 249;
+        --text-500: 34 211 238;
+      }
+
+      /* Nebula Theme - Space Purple/Pink */
+      [data-theme="nebula"] {
+        --bg-900: 35 27 46;    
+        --bg-800: 51 34 66;    
+        --bg-700: 71 45 84;   
+        --bg-600: 92 57 107;   
+        --accent: 217 70 239;  /* Fuchsia 500 */
+
+        --text-100: 253 244 255;
+        --text-200: 250 232 255;
+        --text-300: 245 208 254;
+        --text-400: 240 171 252;
+        --text-500: 232 121 249;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* Prevent bounce scroll */
+        background-color: rgb(var(--bg-900));
+        color: rgb(var(--text-100));
+        -webkit-font-smoothing: antialiased;
+        overscroll-behavior: none;
+      }
+
+      #root {
+        position: fixed; /* Lock to viewport */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100dvh; /* Dynamic viewport height */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Custom Scrollbar for inner elements */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: rgb(var(--bg-900));
+        border-radius: 3px;
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body class="antialiased selection:bg-nexus-accent selection:text-white">
+    <div id="root"></div>
+    <script>
+      // Load saved theme or use system preference (Default behavior)
+      const savedTheme = localStorage.getItem('nexus-theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', systemDark ? 'dark' : 'light');
+      }
+    </script>
+  </body>
+</html>

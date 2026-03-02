@@ -1,0 +1,5 @@
+{
+  "name": "ConnectUs",
+  "description": "Serverless, secure, peer-to-peer chat and collaboration platform using WebRTC.",
+  "requestFramePermissions": []
+}
